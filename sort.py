@@ -6,6 +6,8 @@ insertion
 merge
 quick
 '''
+import random
+
 
 def selection_sort(arr):
     result = []
@@ -80,11 +82,7 @@ def partition(array, start, end):
     high = end
 
     while True:
-        # If the current value we're looking at is larger than the pivot
-        # it's in the right place (right side of pivot) and we can move left,
-        # to the next element.
-        # We also need to make sure we haven't surpassed the low pointer, since that
-        # indicates we have already moved all the elements to their correct side of the pivot
+      
         while low <= high and array[high] >= pivot:
             high = high - 1
 
@@ -117,99 +115,64 @@ def quick_sort(array, start, end):
 # quick_sort(array, 0, len(array) - 1)
 # print(array)
 
+
+# Quick sort using random pivot
+
+def partition_random(A, left_index, right_index):
+    pivot = A[left_index]
+    i = left_index + 1
+    for j in range(left_index + 1, right_index):
+        if A[j] < pivot:
+            A[j], A[i] = A[i], A[j]
+            i += 1
+    A[left_index], A[i - 1] = A[i - 1], A[left_index]
+    return i - 1
+def quick_sort_random(A, left, right):
+    if left < right:
+        pivot = random.randint(left, right - 1)
+        A[pivot], A[left] =  A[left], A[pivot]
+        
+        pivot_index = partition_random(A, left, right)
+        quick_sort_random(
+            A, left, pivot_index
+        ) 
+        quick_sort_random(
+            A, pivot_index + 1, right
+        ) 
+
 # Counting sort
 
 def countingSort(inputArray):
-     #  I = [2, 2, 0, 6, 1, 9, 9, 7]
-    # Find the maximum element in the inputArray max =9
     maxEl = max(inputArray)
+    countArray = [0] * ( maxEl+1)
 
-    countArrayLength = maxEl+1
+    for i in inputArray:
+        countArray[i] += 1  
+  
+    result = []
+  
+    for (index, i) in enumerate(countArray):
+        result += [index] * i
+    return result
 
-    # Initialize the countArray with (max+1) zeros
-#    C = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    countArray = [0] * countArrayLength
-
-    # Step 1 -> Traverse the inputArray and increase 
-    # the corresponding count for every element by 1
-
-# I = [2, 2, 0, 6, 1, 9, 9, 7] # The first element is 2
-#    C = [0, 0, 1, 0, 0, 0, 0, 0, 0, 0] # We increase count of 2nd element by 1
-#indices: 0  1  2  3  4  5  6  7  8  9
-
-    for el in inputArray: 
-        countArray[el] += 1
-
-#    C = [1, 1, 2, 0, 0, 0, 1, 1, 0, 2] 
-#indices: 0  1  2  3  4  5  6  7  8  9
-
-    # Step 2 -> For each element in the countArray, 
-    # sum up its value with the value of the previous 
-    # element, and then store that value 
-    # as the value of the current element
-    for i in range(1, countArrayLength):
-        countArray[i] += countArray[i-1] 
-
-#   C = [1, 2, 4, 4, 4, 4, 5, 6, 6, 8] 
-#indices: 0  1  2  3  4  5  6  7  8  9
-
-    # Step 3 -> Calculate element position
-    # based on the countArray values
-    outputArray = [0] * len(inputArray)
-    i = len(inputArray) - 1
-    while i >= 0:
-        currentEl = inputArray[i]
-        countArray[currentEl] -= 1
-        newPosition = countArray[currentEl]
-        outputArray[newPosition] = currentEl
-        i -= 1
-
-    return outputArray
-
-inputArray = [2,2,0,6,1,9,9,7]
-print("Input array = ", inputArray)
-
-sortedArray = countingSort(inputArray)
-print("Counting sort result = ", sortedArray)
-
-
-
-# ar = [12, 123, 5, 24, 35, 13, 1, 6, 2]
-# x = merge_sort(ar)
-# print(x)
-
+# inputArray = [2,2,0,6,1,9,9,7]
+# sorted = countingSort(inputArray)
+# print(sorted)
 
 
 # radix sort
 
 def countingSortForRadix(inputArray, placeValue):
-    # We can assume that the number of digits used to represent
-    # all numbers on the placeValue position is not grater than 10
     countArray = [0] * 10
     inputSize = len(inputArray)
-
-    # placeElement is the value of the current place value
-    # of the current element, e.g. if the current element is
-    # 123, and the place value is 10, the placeElement is
-    # equal to 2
+ 
     for i in range(inputSize): 
         placeElement = (inputArray[i] // placeValue) % 10
         countArray[placeElement] += 1
 
-    for i in range(1, 10):
-        countArray[i] += countArray[i-1]
-
-    # Reconstructing the output array
-    outputArray = [0] * inputSize
-    i = inputSize - 1
-    while i >= 0:
-        currentEl = inputArray[i]
-        placeElement = (inputArray[i] // placeValue) % 10
-        countArray[placeElement] -= 1
-        newPosition = countArray[placeElement]
-        outputArray[newPosition] = currentEl
-        i -= 1
-        
+    outputArray = []
+    for (index, i) in enumerate(countArray):
+            outputArray += [index] * i
     return outputArray
 
 def radixSort(inputArray):
@@ -231,10 +194,8 @@ def radixSort(inputArray):
         outputArray = countingSortForRadix(outputArray, placeVal)
         placeVal *= 10  
         D -= 1
-
     return outputArray
     
-input = [2,20,61,997,1,619]
-print(input)
-sorted = radixSort(input)
-print(sorted)
+# input = [2,20,61,997,1,619]
+# sorted = radixSort(input)
+# print(sorted)
