@@ -118,27 +118,33 @@ def quick_sort(array, start, end):
 
 # Quick sort using random pivot
 
-def partition_random(A, left_index, right_index):
-    pivot = A[left_index]
+def partition_random(arr, left_index, right_index):
+    pivot = arr[left_index]
     i = left_index + 1
     for j in range(left_index + 1, right_index):
-        if A[j] < pivot:
-            A[j], A[i] = A[i], A[j]
+        if arr[j] < pivot:
+            arr[j], arr[i] = arr[i], arr[j]
             i += 1
-    A[left_index], A[i - 1] = A[i - 1], A[left_index]
+    arr[left_index], arr[i - 1] = arr[i - 1], arr[left_index]
     return i - 1
-def quick_sort_random(A, left, right):
+def quick_sort_random(arr, left, right):
     if left < right:
         pivot = random.randint(left, right - 1)
-        A[pivot], A[left] =  A[left], A[pivot]
+        arr[pivot], arr[left] =  arr[left], arr[pivot]
         
-        pivot_index = partition_random(A, left, right)
+        pivot_index = partition_random(arr, left, right)
         quick_sort_random(
-            A, left, pivot_index
+            arr, left, pivot_index
         ) 
         quick_sort_random(
-            A, pivot_index + 1, right
+            arr, pivot_index + 1, right
         ) 
+    return arr
+
+inputArray = [2,2,0,6,1,9,9,7]
+sorted = quick_sort_random(inputArray, 0, len(inputArray))
+print(sorted)
+
 
 # Counting sort
 
